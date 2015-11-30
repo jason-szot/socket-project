@@ -5,6 +5,8 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <fstream>
+#include <iostream>
 
 
 #define MAXLINE 4096 /*max text line length*/
@@ -14,8 +16,11 @@ int
 main(int argc, char **argv) 
 {
  int sockfd;
+ std::ofstream output;
  struct sockaddr_in servaddr;
- char sendline[MAXLINE], recvline[MAXLINE];
+ char *sendline, recvline[MAXLINE];
+ time_t ltime;
+ sendline = (char*)calloc(MAXLINE,sizeof(char));
 	
  //basic check of the arguments
  //additional checks can be inserted
@@ -42,9 +47,21 @@ main(int argc, char **argv)
   perror("Problem in connecting to the server");
   exit(3);
  }
-	
- while (fgets(sendline, MAXLINE, stdin) != NULL) {
-	
+	int choice = 0;
+  char *opt;
+ while (1) {
+      printf("enter 9 to quit");
+      printf("\nenter your command: ");
+      fgets(sendline, MAXLINE, stdin);
+      if (atoi(sendline) == 9)
+      {
+      return 0;
+      }
+	                 //fgets(sendline, MAXLINE, stdin) != NULL
+  ltime = time(NULL);
+  output.open("client_log.txt", std::ios::app);
+  output << asctime( localtime(&ltime))  << "command sent:" << "\n" << sendline<< "\n";
+  output.close();
   send(sockfd, sendline, strlen(sendline), 0);
 		
   if (recv(sockfd, recvline, MAXLINE,0) == 0){
@@ -52,8 +69,17 @@ main(int argc, char **argv)
    perror("The server terminated prematurely"); 
    exit(4);
   }
-  printf("%s", "String received from the server: ");
-  fputs(recvline, stdout);
+  printf("%s%s", "String received from the server: \n", recvline);
+  output.open("client_log.txt", std::ios::app);
+  ltime = time(NULL);
+  output << asctime( localtime(&ltime)) << "reply recieved:" << "\n" << recvline << "\n";
+  output << "---------------------------------------\n";
+  output.close();
+
+  // empty the sendline array
+  for ( int i = 0; i < 800; i++){
+    sendline[i] = '\0';
+  }
  }
 
  exit(0);
