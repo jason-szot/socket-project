@@ -18,9 +18,10 @@ main(int argc, char **argv)
  int sockfd;
  std::ofstream output;
  struct sockaddr_in servaddr;
- char *sendline, recvline[MAXLINE];
+ char *sendline, *recvline;
  time_t ltime;
  sendline = (char*)calloc(MAXLINE,sizeof(char));
+
 	
  //basic check of the arguments
  //additional checks can be inserted
@@ -63,7 +64,7 @@ main(int argc, char **argv)
   output << asctime( localtime(&ltime))  << "command sent:" << "\n" << sendline<< "\n";
   output.close();
   send(sockfd, sendline, strlen(sendline), 0);
-		
+  recvline = (char*)calloc(MAXLINE,sizeof(char));		
   if (recv(sockfd, recvline, MAXLINE,0) == 0){
    //error: server terminated prematurely
    perror("The server terminated prematurely"); 
@@ -75,6 +76,7 @@ main(int argc, char **argv)
   output << asctime( localtime(&ltime)) << "reply recieved:" << "\n" << recvline << "\n";
   output << "---------------------------------------\n";
   output.close();
+  free(recvline);
 
   // empty the sendline array
   for ( int i = 0; i < 800; i++){
