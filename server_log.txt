@@ -1,0 +1,30 @@
+Mon Dec  7 18:43:41 2015
+
+command received: 
+select * from cd
+
+Mon Dec  7 18:43:45 2015
+
+command received: 
+select * from artist
+
+Mon Dec  7 18:43:51 2015
+
+command received: 
+select * from track
+
+Mon Dec  7 18:43:55 2015
+
+command received: 
+select name from artist
+
+Mon Dec  7 18:44:00 2015
+
+command received: 
+select cd_id from track
+
+Mon Dec  7 18:44:06 2015
+
+command received: 
+select title from track
+
